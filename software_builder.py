@@ -61,4 +61,30 @@ if description:
     features = st.text_input("Enter features of the software:")
     
     if features:
-        st.write(f"Thank you! Now, what programming langu
+        st.write(f"Thank you! Now, what programming language or framework would you like to use?")
+        speak("What programming language or framework would you like to use?")
+        
+        language = st.text_input("Enter preferred language/framework:")
+        
+        if language:
+            speak(f"Got it! Generating code for a {language} software project with the following features: {features}")
+            code_description = f"A {language} project with the following features: {features}."
+            code = generate_software_code(code_description)
+            st.code(code, language="python")
+        else:
+            speak("Please provide a programming language or framework for the software.")
+            st.write("Please enter a programming language or framework.")
+    else:
+        speak("Please provide some features for your software project.")
+        st.write("Please enter some features for your software.")
+else:
+    st.write("Please enter a project description to get started.")
+
+# Voice-based interaction (button to start listening)
+if st.button("Start Voice Command"):
+    command = listen()
+    if command:
+        speak(f"Generating code for: {command}")
+        code = generate_software_code(command)
+        st.code(code, language="python")
+        speak("Code has been generated and displayed on the screen.")
