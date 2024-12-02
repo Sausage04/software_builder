@@ -3,17 +3,28 @@ import pyttsx3
 import speech_recognition as sr
 import os
 import streamlit as st
+from gtts import gTTS
+import tempfile
 
-# Initialize text-to-speech engine
-engine = pyttsx3.init()
+# Use gTTS as a fallback TTS engine
+def gtts_speak(text):
+    tts = gTTS(text)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_audio:
+        tts.save(temp_audio.name)
+        os.system(f"mpg123 {temp_audio.name}" if os.name != "nt" else f"start {temp_audio.name}")
+
+# Initialize pyttsx3 (use gTTS if it fails)
+try:
+    engine = pyttsx3.init()
+    def speak(text):
+        engine.say(text)
+        engine.runAndWait()
+except Exception as e:
+    print(f"pyttsx3 initialization failed: {e}")
+    speak = gtts_speak  # Fallback to gTTS
 
 # Set up OpenAI API key securely from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Get the key from environment variable for security
-
-# Function to speak the text (Text-to-Speech)
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure API key is set in your environment
 
 # Function to listen to voice commands (Speech-to-Text)
 def listen():
