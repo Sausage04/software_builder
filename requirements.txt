@@ -3,3 +3,4 @@ pyttsx3
 SpeechRecognition
 gTTS
 streamlit
+PyAudio
